@@ -1,10 +1,6 @@
-import Web3 from 'web3';
-import chai from 'chai';
-const {assert} = chai;
-
 export const defaultGas = 6000000;
 
-export function createWeb3() {
+export function createWeb3(Web3) {
   const web3 = new Web3();
   const Ganache = require('ganache-core');
   const ganacheOptions = {
@@ -42,13 +38,12 @@ export async function expectThrow(promise) {
     const invalidOpcode = error.message.search('invalid opcode') >= 0;
     const outOfGas = error.message.search('out of gas') >= 0;
     const revert = error.message.search('revert') >= 0;
-    assert(
-      invalidOpcode || outOfGas || revert,
-      `Expected throw, got '${error}' instead`,
-    );
+    if (!(invalidOpcode || outOfGas || revert)) {
+      throw Error(`Expected throw, got '${error}' instead`);
+    }
     return;
   }
-  assert.fail('Expected throw not received');
+  throw Error('Expected throw not received');
 }
 
 export async function latestTime(web3) {

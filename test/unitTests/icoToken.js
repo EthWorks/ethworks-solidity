@@ -1,14 +1,14 @@
 import {createWeb3, deployContract, expectThrow} from '../testUtils.js';
 import icoTokenJson from '../../build/contracts/IcoToken.json';
+import Web3 from 'web3';
 import chai from 'chai';
 import bnChai from 'bn-chai';
 
 const {expect} = chai;
-const web3 = createWeb3();
+const web3 = createWeb3(Web3);
 chai.use(bnChai(web3.utils.BN));
 
 describe('IcoToken', () => {
-  const web3 = createWeb3();
   const {BN} = web3.utils;
   let tokenOwner;
   let tokenContract;

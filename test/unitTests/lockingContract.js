@@ -1,11 +1,12 @@
 import {createWeb3, deployContract, expectThrow, increaseTimeTo, durationInit, latestTime} from '../testUtils.js';
 import thinkCoinJson from '../../build/contracts/IcoToken.json';
 import lockingJson from '../../build/contracts/LockingContract.json';
+import Web3 from 'web3';
 import chai from 'chai';
 import bnChai from 'bn-chai';
 
 const {expect} = chai;
-const web3 = createWeb3();
+const web3 = createWeb3(Web3);
 chai.use(bnChai(web3.utils.BN));
 
 describe('LockingContract', () => {
@@ -19,7 +20,6 @@ describe('LockingContract', () => {
   let notTheOwner;
   let deploymentTime; 
   let lockingContractAddress;
-  const web3 = createWeb3();
   const {BN} = web3.utils;
   const duration = durationInit(web3);
   const tokenCap = new BN(500000000);

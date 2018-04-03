@@ -1,10 +1,11 @@
 import {createWeb3, deployContract, expectThrow} from '../testUtils.js';
 import whitelistJson from '../../build/contracts/Whitelist.json';
+import Web3 from 'web3';
 import chai from 'chai';
 const {expect} = chai;
 
 describe('Whitelist', async () => {
-  const web3 = createWeb3();
+  const web3 = createWeb3(Web3);
   let accounts;
   let whitelistContract;
   let whitelistOwner;

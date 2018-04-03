@@ -2,11 +2,12 @@ import {createWeb3, deployContract, expectThrow, latestTime, durationInit, incre
 import crowdsaleJson from '../../build/contracts/Crowdsale.json';
 import tokenJson from '../../build/contracts/IcoToken.json';
 import lockingJson from '../../build/contracts/LockingContract.json';
+import Web3 from 'web3';
 import chai from 'chai';
 import bnChai from 'bn-chai';
 
 const {expect} = chai;
-const web3 = createWeb3();
+const web3 = createWeb3(Web3);
 chai.use(bnChai(web3.utils.BN));
 
 describe('Crowdsale', () => {
