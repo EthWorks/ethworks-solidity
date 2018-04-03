@@ -1,13 +1,13 @@
 pragma solidity ^0.4.19;
 import "zeppelin-solidity/contracts/token/ERC20/MintableToken.sol";
 
-contract IcoToken is MintableToken {
+contract CrowdfundableToken is MintableToken {
     string public name;
     string public symbol;
     uint8 public decimals;
     uint256 public cap;
 
-    function IcoToken(uint256 _cap, string _name, string _symbol, uint8 _decimals) public {
+    function CrowdfundableToken(uint256 _cap, string _name, string _symbol, uint8 _decimals) public {
         require(_cap > 0);
         require(bytes(_name).length > 0);
         require(bytes(_symbol).length > 0);

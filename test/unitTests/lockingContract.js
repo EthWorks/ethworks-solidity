@@ -1,5 +1,5 @@
 import {createWeb3, deployContract, expectThrow, increaseTimeTo, durationInit, latestTime} from '../testUtils.js';
-import thinkCoinJson from '../../build/contracts/IcoToken.json';
+import tokenJson from '../../build/contracts/CrowdfundableToken.json';
 import lockingJson from '../../build/contracts/LockingContract.json';
 import Web3 from 'web3';
 import chai from 'chai';
@@ -53,8 +53,8 @@ describe('LockingContract', () => {
   });
 
   beforeEach(async () => {
-    tokenContract = await deployContract(web3, thinkCoinJson, tokenOwner,
-      [tokenCap, 'IcoToken', 'IT', 18]);
+    tokenContract = await deployContract(web3, tokenJson, tokenOwner,
+      [tokenCap, 'CrowdfundableToken', 'CT', 18]);
     lockingContract = await deployContract(web3, lockingJson, lockingOwner,
       [tokenContract.options.address, lockingDuration]);
     deploymentTime = new BN(await latestTime(web3));

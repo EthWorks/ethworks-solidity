@@ -2,7 +2,7 @@ pragma solidity ^0.4.19;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
-import "./IcoToken.sol";
+import "./CrowdfundableToken.sol";
 import "./LockingContract.sol";
 
 contract Crowdsale is Ownable, Pausable {
@@ -10,12 +10,12 @@ contract Crowdsale is Ownable, Pausable {
 
     event Minted(address indexed _beneficiary, uint256 _tokenAmount);
 
-    IcoToken public token;
+    CrowdfundableToken public token;
     LockingContract public lockingContract;
     uint256 public saleStartTime;
     uint256 public saleEndTime;
 
-    function Crowdsale(IcoToken _token,
+    function Crowdsale(CrowdfundableToken _token,
                       uint256 _saleStartTime,
                       uint256 _saleEndTime,
                       uint256 _lockingPeriod

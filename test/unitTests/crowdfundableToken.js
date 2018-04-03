@@ -1,5 +1,5 @@
 import {createWeb3, deployContract, expectThrow} from '../testUtils.js';
-import icoTokenJson from '../../build/contracts/IcoToken.json';
+import crowdfundableTokenJson from '../../build/contracts/CrowdfundableToken.json';
 import Web3 from 'web3';
 import chai from 'chai';
 import bnChai from 'bn-chai';
@@ -8,7 +8,7 @@ const {expect} = chai;
 const web3 = createWeb3(Web3);
 chai.use(bnChai(web3.utils.BN));
 
-describe('IcoToken', () => {
+describe('CrowdfundableToken', () => {
   const {BN} = web3.utils;
   let tokenOwner;
   let tokenContract;
@@ -18,8 +18,8 @@ describe('IcoToken', () => {
   let notTheOwner;
   let client2;
   let client3;
-  const name = 'IcoToken';
-  const symbol = 'IT';
+  const name = 'CrowdfundableToken';
+  const symbol = 'CT';
   const decimals = 18;
   const tokenCap = new BN(500000000);
 
@@ -29,7 +29,7 @@ describe('IcoToken', () => {
   });
 
   beforeEach(async () => {
-    tokenContract = await deployContract(web3, icoTokenJson, tokenOwner,
+    tokenContract = await deployContract(web3, crowdfundableTokenJson, tokenOwner,
       [tokenCap, name, symbol, decimals]);
     tokenContractAddress = tokenContract.options.address;
   });
@@ -71,12 +71,12 @@ describe('IcoToken', () => {
   describe('Creating', async () => {
     it('should not be created without a name', async () => {
       const args = [tokenCap, '', symbol, decimals];
-      await expectThrow(deployContract(web3, icoTokenJson, tokenOwner, args));
+      await expectThrow(deployContract(web3, crowdfundableTokenJson, tokenOwner, args));
     });
 
     it('should not be created without a symbol', async () => {
       const args = [tokenCap, name, '', decimals];
-      await expectThrow(deployContract(web3, icoTokenJson, tokenOwner, args));
+      await expectThrow(deployContract(web3, crowdfundableTokenJson, tokenOwner, args));
     });
   });
 

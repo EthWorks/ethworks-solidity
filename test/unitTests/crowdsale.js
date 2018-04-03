@@ -1,6 +1,6 @@
 import {createWeb3, deployContract, expectThrow, latestTime, durationInit, increaseTimeTo} from '../testUtils.js';
 import crowdsaleJson from '../../build/contracts/Crowdsale.json';
-import tokenJson from '../../build/contracts/IcoToken.json';
+import tokenJson from '../../build/contracts/CrowdfundableToken.json';
 import lockingJson from '../../build/contracts/LockingContract.json';
 import Web3 from 'web3';
 import chai from 'chai';
@@ -34,7 +34,7 @@ describe('Crowdsale', () => {
 
   const deployContracts = async () => {
     // token contract
-    const args = [tokenCap, 'IcoToken', 'IT', 18];
+    const args = [tokenCap, 'CrowdfundableToken', 'CT', 18];
     tokenContract = await deployContract(web3, tokenJson, tokenDeployer, args);
     tokenContractAddress = tokenContract.options.address;
 
