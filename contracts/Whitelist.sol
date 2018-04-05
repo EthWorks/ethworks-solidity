@@ -8,12 +8,12 @@ contract Whitelist is Ownable {
 
     function add(address _address) public onlyOwner {
         whitelist[_address] = true;
-        AddedToWhitelist(_address);
+        emit AddedToWhitelist(_address);
     }
 
     function remove(address _address) public onlyOwner {
         whitelist[_address] = false;
-        RemovedFromWhitelist(_address);
+        emit RemovedFromWhitelist(_address);
     }
 
     function isWhitelisted(address _address) public view returns(bool) {

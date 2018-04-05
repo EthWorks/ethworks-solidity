@@ -54,7 +54,7 @@ contract Crowdsale is Ownable, Pausable {
         require(_tokenAmount > 0);
         require(_beneficiary != 0x0);
         token.mint(_beneficiary, _tokenAmount);
-        Minted(_beneficiary, _tokenAmount);
+        emit Minted(_beneficiary, _tokenAmount);
     }
 
     function mintLocked(address _beneficiary, uint256 _tokenAmount) internal {

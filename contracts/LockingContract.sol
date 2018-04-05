@@ -49,7 +49,7 @@ contract LockingContract is Ownable {
 
         tokens[_beneficiary] = tokens[_beneficiary].add(_tokenAmount);
         totalTokens = totalTokens.add(_tokenAmount);
-        NotedTokens(_beneficiary, _tokenAmount);
+        emit NotedTokens(_beneficiary, _tokenAmount);
     }
 
     function releaseTokens(address _beneficiary) public onlyWhenUnlocked {
@@ -58,13 +58,13 @@ contract LockingContract is Ownable {
         tokens[_beneficiary] = 0;
         require(tokenContract.transfer(_beneficiary, amount)); 
         totalTokens = totalTokens.sub(amount);
-        ReleasedTokens(_beneficiary);
+        emit ReleasedTokens(_beneficiary);
     }
 
     function reduceLockingTime(uint256 _newUnlockTime) public onlyOwner onlyWhenLocked {
         require(_newUnlockTime >= now);
         require(_newUnlockTime < unlockTime);
         unlockTime = _newUnlockTime;
-        ReducedLockingTime(_newUnlockTime);
+        emit ReducedLockingTime(_newUnlockTime);
     }
 }
