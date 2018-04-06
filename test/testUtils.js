@@ -10,10 +10,10 @@ export function createWeb3(Web3) {
   return web3;
 }
 
-export async function deployContract(web3, contractJson, ownerAccount, constructorArguments) {
+export async function deployContract(web3, contractJson, ownerAccount, constructorArguments, value = 0) {
   const contract = await new web3.eth.Contract(contractJson.abi)
     .deploy({data: contractJson.bytecode, arguments: constructorArguments})
-    .send({from: ownerAccount, gas: defaultGas});
+    .send({from: ownerAccount, gas: defaultGas, value});
   contract.setProvider(web3.currentProvider);
   contract.options.gas = defaultGas;
   return contract;
