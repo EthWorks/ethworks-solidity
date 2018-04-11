@@ -15,17 +15,18 @@ contract Crowdsale is Ownable, Pausable {
     uint256 public saleStartTime;
     uint256 public saleEndTime;
 
-    function Crowdsale(CrowdfundableToken _token,
-                      uint256 _saleStartTime,
-                      uint256 _saleEndTime,
-                      uint256 _lockingPeriod
-                      ) public {
+    function Crowdsale(
+        CrowdfundableToken _token,
+        uint256 _saleStartTime,
+        uint256 _saleEndTime,
+        uint256 _lockingPeriod
+        ) public {
         require(address(_token) != 0x0);
         require(_saleStartTime > now);
         require(_lockingPeriod > 0);
 
         token = _token;
-        lockingContract = new LockingContract(token, _lockingPeriod);
+        lockingContract = new LockingContract(token, _saleEndTime.add(_lockingPeriod));
         saleStartTime = _saleStartTime;
         saleEndTime = _saleEndTime;
     }
@@ -65,22 +66,6 @@ contract Crowdsale is Ownable, Pausable {
     function finishMinting() public onlyOwner saleEnded {
         token.finishMinting();
         transferTokenOwnership();
-    }
-
-    function mintPreSale(address _beneficiary, uint256 _tokenAmount) public onlyOwner saleNotStarted {
-        mint(_beneficiary, _tokenAmount);
-    }
-
-    function mintPreSaleLocked(address _beneficiary, uint256 _tokenAmount) public onlyOwner saleNotStarted {
-        mintLocked(_beneficiary, _tokenAmount);
-    }
-
-    function mintPostSale(address _beneficiary, uint256 _tokenAmount) public onlyOwner saleEnded {
-        mint(_beneficiary, _tokenAmount);
-    }
-
-    function mintPostSaleLocked(address _beneficiary, uint256 _tokenAmount) public onlyOwner saleEnded {
-        mintLocked(_beneficiary, _tokenAmount);
     }
 
     function transferTokenOwnership() public onlyOwner {

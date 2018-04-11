@@ -29,10 +29,10 @@ contract LockingContract is Ownable {
         _;
     }
 
-    function LockingContract(ERC20 _tokenContract, uint256 _lockingDuration) public {
-        require(_lockingDuration > 0);
+    function LockingContract(ERC20 _tokenContract, uint256 _unlockTime) public {
+        require(_unlockTime > now);
         require(address(_tokenContract) != 0x0);
-        unlockTime = now.add(_lockingDuration);
+        unlockTime = _unlockTime;
         tokenContract = _tokenContract;
     }
 
@@ -45,7 +45,7 @@ contract LockingContract is Ownable {
     // one should mint/transfer tokens to the LockingContract's account prior to noting
     function noteTokens(address _beneficiary, uint256 _tokenAmount) external onlyOwner onlyWhenLocked {
         uint256 tokenBalance = tokenContract.balanceOf(this);
-        require(tokenBalance == totalTokens.add(_tokenAmount));
+        require(tokenBalance >= totalTokens.add(_tokenAmount));
 
         tokens[_beneficiary] = tokens[_beneficiary].add(_tokenAmount);
         totalTokens = totalTokens.add(_tokenAmount);

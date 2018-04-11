@@ -1,4 +1,4 @@
-import {createWeb3, deployContract, expectThrow, latestTime, durationInit, increaseTimeTo} from '../testUtils.js';
+import {createWeb3, deployContract, expectThrow, latestTime, durationInit, increaseTimeTo, expectNotAFunction} from '../testUtils.js';
 import crowdsaleJson from '../../build/contracts/Crowdsale.json';
 import tokenJson from '../../build/contracts/CrowdfundableToken.json';
 import lockingJson from '../../build/contracts/LockingContract.json';
@@ -85,18 +85,11 @@ describe('Crowdsale', () => {
   const finishMinting = async (from) =>
     saleContract.methods.finishMinting().send({from});
 
-  const mintPreSale = async (beneficiary, tokenAmount, from) =>
-    saleContract.methods.mintPreSale(beneficiary, tokenAmount).send({from});
+  const mint = async (beneficiary, tokenAmount, from) =>
+    saleContract.methods.mint(beneficiary, tokenAmount).send({from});
 
-  const mintPreSaleLocked = async (beneficiary, tokenAmount, from) =>
-    saleContract.methods.mintPreSaleLocked(beneficiary, tokenAmount).send({from});
-
-  const mintPostSale = async (beneficiary, tokenAmount, from) =>
-    saleContract.methods.mintPostSale(beneficiary, tokenAmount).send({from});
-
-  const mintPostSaleLocked = async (beneficiary, tokenAmount, from) =>
-    saleContract.methods.mintPostSaleLocked(beneficiary, tokenAmount).send({from});
-
+  const mintLocked = async (beneficiary, tokenAmount, from) =>
+    saleContract.methods.mintLocked(beneficiary, tokenAmount).send({from});
 
   describe('Transferring token ownership', async () => {
     const testShouldTransferTokenOwnership = async (from = saleOwner) => {
@@ -143,106 +136,46 @@ describe('Crowdsale', () => {
   describe('Minting', async () => {
     const contributionAmount = new BN(web3.utils.toWei('1'));
 
-    const testShouldMintPreSale = async (beneficiary, tokenAmount, from) => {
+    const testShouldNotMint = async (beneficiary, tokenAmount, from) => {
       const initialBalance = new BN(await balanceOf(beneficiary));
-      await mintPreSale(beneficiary, tokenAmount, from);
-      const balance = new BN(await balanceOf(beneficiary));
-      expect(balance.sub(initialBalance)).to.eq.BN(tokenAmount);
-    };
-
-    const testShouldNotMintPreSale = async (beneficiary, tokenAmount, from) => {
-      const initialBalance = new BN(await balanceOf(beneficiary));
-      await expectThrow(mintPreSale(beneficiary, tokenAmount, from));
+      await expectNotAFunction(mint(beneficiary, tokenAmount, from));
       const balance = await balanceOf(beneficiary);
       expect(balance).to.eq.BN(initialBalance);
     };
 
-    const testShouldMintPreSaleLocked = async (beneficiary, tokenAmount, from) => {
+    const testShouldNotMintLocked = async (beneficiary, tokenAmount, from) => {
       const initialBalance = new BN(await lockedBalanceOf(beneficiary));
-      await mintPreSaleLocked(beneficiary, tokenAmount, from);
+      await expectNotAFunction(mintLocked(beneficiary, tokenAmount, from));
       const balance = new BN(await lockedBalanceOf(beneficiary));
-      expect(balance.sub(initialBalance)).to.eq.BN(tokenAmount);
-    };
-
-    const testShouldNotMintPreSaleLocked = async (beneficiary, tokenAmount, from) => {
-      const initialBalance = new BN(await lockedBalanceOf(beneficiary));
-      await expectThrow(mintPreSaleLocked(beneficiary, tokenAmount, from));
-      const balance = await lockedBalanceOf(beneficiary);
-      expect(balance).to.eq.BN(initialBalance);
-    };
-
-    const testShouldMintPostSale = async (beneficiary, tokenAmount, from) => {
-      const initialBalance = new BN(await balanceOf(beneficiary));
-      await mintPostSale(beneficiary, tokenAmount, from);
-      const balance = new BN(await balanceOf(beneficiary));
-      expect(balance.sub(initialBalance)).to.eq.BN(tokenAmount);
-    };
-
-    const testShouldNotMintPostSale = async (beneficiary, tokenAmount, from) => {
-      const initialBalance = new BN(await balanceOf(beneficiary));
-      await expectThrow(mintPostSale(beneficiary, tokenAmount, from));
-      const balance = await balanceOf(beneficiary);
-      expect(balance).to.eq.BN(initialBalance);
-    };
-
-    const testShouldMintPostSaleLocked = async (beneficiary, tokenAmount, from) => {
-      const initialBalance = new BN(await lockedBalanceOf(beneficiary));
-      await mintPostSaleLocked(beneficiary, tokenAmount, from);
-      const balance = new BN(await lockedBalanceOf(beneficiary));
-      expect(balance.sub(initialBalance)).to.eq.BN(tokenAmount);
-    };
-
-    const testShouldNotMintPostSaleLocked = async (beneficiary, tokenAmount, from) => {
-      const initialBalance = new BN(await lockedBalanceOf(beneficiary));
-      await expectThrow(mintPostSaleLocked(beneficiary, tokenAmount, from));
-      const balance = await lockedBalanceOf(beneficiary);
       expect(balance).to.eq.BN(initialBalance);
     };
 
     describe('Before crowdsale starts', async () => {
-      it('should allow to mint pre sale', 
-        async () => testShouldMintPreSale(contributor, contributionAmount, saleOwner));
+      it('should not allow to mint', 
+        async () => testShouldNotMint(contributor, contributionAmount, saleOwner));
 
-      it('should allow to mint pre sale locked', 
-        async () => testShouldMintPreSaleLocked(contributor, contributionAmount, saleOwner));
-
-      it('should not allow to mint post sale', 
-        async () => testShouldNotMintPostSale(contributor, contributionAmount, saleOwner));
-
-      it('should not allow to mint post sale locked', 
-        async () => testShouldNotMintPostSaleLocked(contributor, contributionAmount, saleOwner));
+      it('should not allow to mint locked', 
+        async () => testShouldNotMintLocked(contributor, contributionAmount, saleOwner));
     });
 
     describe('Crowdsale started', async () => {
       beforeEach(advanceToSaleStarted);
 
-      it('should not allow to mint pre sale', 
-        async () => testShouldNotMintPreSale(contributor, contributionAmount, saleOwner));
+      it('should not allow to mint', 
+        async () => testShouldNotMint(contributor, contributionAmount, saleOwner));
 
-      it('should not allow to mint pre sale locked', 
-        async () => testShouldNotMintPreSaleLocked(contributor, contributionAmount, saleOwner));
-
-      it('should not allow to mint post sale', 
-        async () => testShouldNotMintPostSale(contributor, contributionAmount, saleOwner));
-
-      it('should not allow to mint post sale locked', 
-        async () => testShouldNotMintPostSaleLocked(contributor, contributionAmount, saleOwner));
+      it('should not allow to mint locked', 
+        async () => testShouldNotMintLocked(contributor, contributionAmount, saleOwner));
     });
 
     describe('Crowdsale ended', async () => {
       beforeEach(advanceToSaleEnded);
 
-      it('should not allow to mint pre sale', 
-        async () => testShouldNotMintPreSale(contributor, contributionAmount, saleOwner));
+      it('should not allow to mint', 
+        async () => testShouldNotMint(contributor, contributionAmount, saleOwner));
 
-      it('should not allow to mint pre sale locked', 
-        async () => testShouldNotMintPreSaleLocked(contributor, contributionAmount, saleOwner));
-
-      it('should allow to mint post sale', 
-        async () => testShouldMintPostSale(contributor, contributionAmount, saleOwner));
-
-      it('should allow to mint post sale locked', 
-        async () => testShouldMintPostSaleLocked(contributor, contributionAmount, saleOwner));
+      it('should not allow to mint locked', 
+        async () => testShouldNotMintLocked(contributor, contributionAmount, saleOwner));
     });
   });
 

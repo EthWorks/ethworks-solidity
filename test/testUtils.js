@@ -46,6 +46,19 @@ export async function expectThrow(promise) {
   throw Error('Expected throw not received');
 }
 
+export async function expectNotAFunction(promise) {
+  try {
+    await promise;
+  } catch (error) {
+    const notAFunction = error.message.search('is not a function') >= 0;
+    if (!notAFunction) {
+      throw Error(`Expected throw, got '${error}' instead`);
+    }
+    return;
+  }
+  throw Error('Expected throw not received');
+}
+
 export async function latestTime(web3) {
   return (await web3.eth.getBlock('latest')).timestamp;
 }
