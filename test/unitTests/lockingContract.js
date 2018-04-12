@@ -64,6 +64,11 @@ describe('LockingContract', () => {
     lockingContractAddress = lockingContract.options.address;
   });
 
+  it('should not allow to be deployed with past unlock time', async () => {
+    const args = [tokenContract.options.address, '738658800'];
+    await expectThrow(deployContract(web3, lockingJson, lockingOwner, args));
+  });
+
   it('should be locked initially', async () => {
     expect(await isLocked()).to.be.equal(true);
   });
