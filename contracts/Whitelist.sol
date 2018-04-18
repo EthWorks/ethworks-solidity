@@ -6,6 +6,11 @@ contract Whitelist is Ownable {
     event AddedToWhitelist(address indexed account);
     event RemovedFromWhitelist(address indexed account);
 
+    modifier onlyWhitelisted() {
+        require(isWhitelisted(msg.sender));
+        _;
+    }
+
     function add(address _address) public onlyOwner {
         whitelist[_address] = true;
         emit AddedToWhitelist(_address);
