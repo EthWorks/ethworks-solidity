@@ -1,10 +1,10 @@
 export const defaultGas = 6000000;
 
-export function createWeb3(Web3) {
+export function createWeb3(Web3, numberOfAccounts = 10) {
   const web3 = new Web3();
   const Ganache = require('ganache-core');
   const ganacheOptions = {
-    accounts: (new Array(10)).fill({balance: web3.utils.toWei('90000000')})
+    accounts: (new Array(numberOfAccounts)).fill({balance: web3.utils.toWei('90000000')})
   };
   web3.setProvider(Ganache.provider(ganacheOptions));
   return web3;
