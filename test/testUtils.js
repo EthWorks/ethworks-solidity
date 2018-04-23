@@ -65,6 +65,9 @@ export async function latestTime(web3) {
 
 export async function increaseTime (web3, duration) {
   const id = Date.now();
+  if (duration.toNumber) {
+    duration = duration.toNumber(); // eslint-disable-line no-param-reassign
+  }
 
   return new Promise((resolve, reject) => {
     web3.currentProvider.sendAsync({
