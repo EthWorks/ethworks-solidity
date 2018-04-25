@@ -6,7 +6,7 @@ contract Whitelist is Ownable {
     event AddedToWhitelist(address indexed account);
     event RemovedFromWhitelist(address indexed account);
 
-    modifier onlyWhitelistedReferral() {
+    modifier onlyWhitelisted() {
         require(isWhitelisted(msg.sender));
         _;
     }
