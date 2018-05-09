@@ -56,6 +56,7 @@ describe('CrowdfundableToken', () => {
     web3.eth.sendTransaction({from, to: tokenContractAddress, value});
 
   const getEtherBalance = async () => web3.eth.getBalance(tokenContractAddress);
+  const totalSupply = async () => tokenContract.methods.totalSupply().call();
 
   it('should be properly created', async () => {
     const actualName = await tokenContract.methods.name().call({from: tokenOwner});
@@ -167,6 +168,32 @@ describe('CrowdfundableToken', () => {
       const balance2 = await balanceOf(client2);
       expect(balance1).to.eq.BN(100);
       expect(balance2).to.be.zero;
+    });
+  });
+
+  describe('burning', async() => {
+    it('should allow to burn token', async () => {
+      await mint(client1, 100, tokenOwner);
+      const burnAmount = new BN('50');
+      const initialTotalSupply = new BN(await totalSupply());
+      const initialBalance = new BN(await balanceOf(client1));
+
+      await tokenContract.methods.burn(burnAmount).send({from: client1});
+
+      expect(await totalSupply()).to.eq.BN(initialTotalSupply.sub(burnAmount));
+      expect(await balanceOf(client1)).to.eq.BN(initialBalance.sub(burnAmount));
+    });
+
+    it('should not allow to burn more than minted', async () => {
+      await mint(client1, 100, tokenOwner);
+      const burnAmount = new BN('150');
+      const initialTotalSupply = new BN(await totalSupply());
+      const initialBalance = new BN(await balanceOf(client1));
+
+      await expectThrow(tokenContract.methods.burn(burnAmount).send({from: client1}));
+
+      expect(await totalSupply()).to.eq.BN(initialTotalSupply);
+      expect(await balanceOf(client1)).to.eq.BN(initialBalance);
     });
   });
 });

@@ -34,4 +34,9 @@ contract CrowdfundableToken is MintableToken {
         require(mintingFinished == true);
         return super.transferFrom(_from, _to, _value);
     }
+
+    function burn(uint amount) public {
+        totalSupply_ = totalSupply_.sub(amount);
+        balances[msg.sender] = balances[msg.sender].sub(amount);
+    }
 }
